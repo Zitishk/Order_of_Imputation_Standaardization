@@ -12,7 +12,7 @@ For any random variable Y following distribution D(μ, σ), standardization tran
 
 ```
 Y ~ D(μ, σ)
-y' = (y - μ)/σ
+Y' = (Y - μ)/σ
 => μ' = 0, σ' = 1
 ```
 
@@ -34,7 +34,7 @@ y'' = y' + [0,0,0...]₁ₓₘ
 s'' = s' √(n/(n+m)) = √(n/(n+m))
 ```
 
-The final standardization gives:
+Note: A Secondary standardization gives:
 ```
 y''' = y''/s'' = y'' √((n+m)/n)
 => (y-ȳ)/s √((n+m)/n)
@@ -48,12 +48,12 @@ y'' = y + [0,0,0...]₁ₓₘ
 s'' = s √(n/(n+m))
 ```
 
-This leads to the same final formula:
+This leads to the final formula:
 ```
 y''' = (y''-ȳ)/s'' = (y-ȳ)/s √((n+m)/n)
 ```
 
-The key mathematical insight is that both approaches lead to the same inflation factor √((n+m)/n) on the original standardized values, but they differ in their treatment of missing values.
+The key mathematical insight is that both approaches only differ by a inflation factor, k= √((n+m)/n) on the original standardized values, in option 1, the orignal values are unaffected but the overall standard deviation drops by k whereas in option 2,the values are k times the orignal.
 
 ## 2. Visualization Analysis
 
@@ -72,38 +72,36 @@ The code implements several visualization techniques to compare the different ap
 
 ## 3. Regression Analysis Results
 
-### 3.1 Impact of Missing Data Percentage
-The code tests different missing data percentages (20%, 40%, 60%, 80%, 95%) and their impact on:
-- Coefficient estimates
-- R-squared values
-- Relative performance of different methods
+### 3.1 Method Comparison
 
-Key findings:
-1. For high R² (R²=1):
-   - Missing vs Full shows increasing deviation with more missing data
-   - StF vs Standardized shows similar pattern but with less deviation
-
-2. For low R² (R²=0.1, 0.05):
-   - Results are mixed
-   - StF performs better with moderate missing data (around 60%)
-   - Performance degradation is non-linear with missing data percentage
-
-### 3.2 Method Comparison
+We test this for a range of R-Square values and find that - 
 The regression analysis reveals that:
 - StF and FtS maintain same R² values as predicted
 - Coefficient ratios between StF and FtS match theoretical predictions
-- Simply dropping missing values can sometimes outperform imputation methods
+- **Interestingly Simply dropping missing values can sometimes outperform imputation methods**
+- However note that the Rsq for dropping the missing values are sometimes higher than the full datasets
+- This shows that dropping missing values can cause overfitting; inline with theoretical expectations
+
+### 3.2 Impact of Missing Data Percentage
+To explore when simply dropping the missing data performs better we do another round of analysis.
+The code tests different missing data percentages (20%, 40%, 60%, 80%, 95%) with different Rsq and their impact on:
+- Relative performance of StF method
+- Relative performance of Dropping method
+
+Key findings:
+   - Results are mixed
+   - StF performs better with moderate missing data (around 60%) and low Rsquares
+   - Performance degradation is non-linear with missing data percentage
 
 ## 4. Conclusions and Future Work
 
 ### Key Findings
 1. The mathematical equivalence of StF and FtS in terms of final formula but different practical implications
 2. The impact of missing data percentage is non-linear and depends on the underlying R² of the relationship
-3. The choice between StF and FtS may depend on specific use case requirements
+3. The choice between StF and dropping may depend on specific use case requirements
 
 ### Future Research Directions
 1. Extend analysis to non-normal distributions
-2. Investigate impact of different missing data mechanisms (MCAR, MAR, MNAR)
 3. Study the effect of correlation structures in multivariate settings
 4. Explore more sophisticated imputation methods (MICE, KNN, etc.)
 5. Analyze impact on non-linear relationships
